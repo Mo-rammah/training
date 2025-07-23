@@ -1,0 +1,26 @@
+{
+  "name": "training",
+  "version": "1.0.0",
+  "description": "Training with leggera",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mo-rammah/training.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mo-rammah/training/issues"
+  },
+  "homepage": "https://github.com/Mo-rammah/training#readme",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10"
+  }
+}
