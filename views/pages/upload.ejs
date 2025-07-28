@@ -1,0 +1,30 @@
+<%- include('../partials/header') %>
+
+    <%- include('../partials/navbar') %>
+
+        <body>
+
+
+            <h1>Upload an Image</h1>
+            <form action="/upload" method="POST" enctype="multipart/form-data">
+                <input type="file" name="image" accept="image/*" onchange="previewImage(event)" required />
+                <img id="preview" src="#" alt="Image Preview"
+                    style="display: none; max-width: 300px; margin-top: 1rem;" />
+                <button type="submit">Upload</button>
+            </form>
+
+            <script>
+                function previewImage(event) {
+                    const preview = document.getElementById('preview');
+                    const file = event.target.files[0];
+
+                    if (file) {
+                        preview.src = URL.createObjectURL(file);
+                        preview.style.display = 'block';
+                    } else {
+                        preview.src = '#';
+                        preview.style.display = 'none';
+                    }
+                }
+            </script>
+        </body>

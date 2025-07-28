@@ -3,7 +3,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 import multer from 'multer'
-import { error } from 'console';
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads')
@@ -35,8 +34,10 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.get('/', (req, res) => {
-    res.render('index', {
+    res.render('pages/index', {
         title: "Training",
     })
 });
@@ -45,21 +46,22 @@ app.post('/upload', (req, res) => {
     upload.single('image')(req, res, (err) => {
         if (err) {
             if (err.code === 'LIMIT_FILE_SIZE') {
-                return res.status(400).send('File too large. Max size is 10MB.');
+                return res.status(400).render('pages/error', { message: 'File is too large, Size limit is 10MB', title: 'error' });
             }
-            return res.status(400).send(err.message);
+            return res.status(400).render('pages/error', { message: err.message, title: 'error' });
         }
         if (!req.file) {
             return res.status(400).send('No file uploaded.');
         }
-        res.json(req.file);
+        //res.json(req.file);
+        res.redirect('/');
         console.log(`file uploaded to: ${req.file.destination}, file name is: ${req.file.filename}`);
     });
 });
 
 
 app.get('/upload', (req, res) => {
-    res.render('upload', {
+    res.render('pages/upload', {
         title: "upload",
     });
 })
