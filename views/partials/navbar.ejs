@@ -1,6 +1,12 @@
 <nav>
     <a href="/">Training</a>
-    <a href="/upload">Upload</a>
-    <a href="/login">Login</a>
-    <a href="/register">Register</a>
+    <% if (isLoggedIn) { %>
+        <a href="/upload">Upload</a>
+        <form action="/logout" method="POST" class="logout-form">
+            <button type="submit" class="logout-button">Logout</button>
+        </form>
+        <% } else { %>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+            <% } %>
 </nav>

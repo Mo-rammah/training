@@ -38,7 +38,9 @@ const upload = multer({
 /// route functions: 
 const getUpload = (req, res) => {
     res.render('pages/upload', {
-        title: 'Upload a file'
+        title: 'Upload a file',
+        isLoggedIn: req.session.isLoggedIn,
+        user: req.session.user,
     })
 };
 
@@ -46,9 +48,9 @@ const postUpload = (req, res) => {
     upload.single('image')(req, res, (err) => {
         if (err) {
             if (err.code === 'LIMIT_FILE_SIZE') {
-                return res.status(400).render('pages/error', { message: 'File is too large, Size limit is 10MB', title: 'error' });
+                return res.status(400).render('pages/error', { message: 'File is too large, Size limit is 10MB', title: 'error', isLoggedIn: req.session.isLoggedIn, user: req.session.user, });
             }
-            return res.status(400).render('pages/error', { message: err.message, title: 'error' });
+            return res.status(400).render('pages/error', { message: err.message, title: 'error', isLoggedIn: req.session.isLoggedIn, user: req.session.user, });
         }
         if (!req.file) {
             return res.status(400).send('No file uploaded.');
@@ -62,7 +64,9 @@ const postUpload = (req, res) => {
 
 const getLogin = (req, res) => {
     res.render('admin/login', {
-        title: "Login"
+        title: "Login",
+        isLoggedIn: req.session.isLoggedIn,
+        user: req.session.user,
     });
 };
 const postLogin = (req, res) => {
@@ -70,6 +74,7 @@ const postLogin = (req, res) => {
         .then(user => {
             if (user && user.password === req.body.password) {
                 console.log('user found logging in');
+                req.session.isLoggedIn = true;
                 res.redirect('/');
             }
             else {
@@ -82,7 +87,9 @@ const postLogin = (req, res) => {
 };
 const getRegister = (req, res) => {
     res.render('admin/register', {
-        title: "Register"
+        title: "Register",
+        isLoggedIn: req.session.isLoggedIn,
+        user: req.session.user,
     });
 };
 const postRegister = (req, res) => {
@@ -99,6 +106,11 @@ const postRegister = (req, res) => {
         })
 
 };
+const postLogout = (req, res) => {
+    req.session.destroy(() => {
+        res.redirect('/');
+    })
+}
 
 export default {
     getUpload,
@@ -107,4 +119,5 @@ export default {
     postLogin,
     getRegister,
     postRegister,
+    postLogout,
 }

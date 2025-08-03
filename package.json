@@ -20,8 +20,10 @@
   "homepage": "https://github.com/Mo-rammah/training#readme",
   "dependencies": {
     "body-parser": "^2.2.0",
+    "connect-session-sequelize": "^8.0.2",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "express-session": "^1.18.2",
     "multer": "^2.0.2",
     "mysql2": "^3.14.3",
     "nodemon": "^3.1.10",

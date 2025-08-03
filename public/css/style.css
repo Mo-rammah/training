@@ -60,3 +60,23 @@ h1 {
 .auth-form button:hover {
   background-color: #45a049;
 }
+.logout-form {
+  display: inline;
+  margin-left: 1rem;
+}
+
+.logout-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.logout-button:hover {
+  background-color: #c0392b;
+}
+

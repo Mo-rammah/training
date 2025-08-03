@@ -8,6 +8,7 @@ router.post('/upload', adminController.postUpload);
 
 router.get('/login', adminController.getLogin);
 router.post('/login', adminController.postLogin);
+router.post('/logout', adminController.postLogout);
 
 router.get('/register', adminController.getRegister);
 router.post('/register', adminController.postRegister);
