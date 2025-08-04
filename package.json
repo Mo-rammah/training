@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Mo-rammah/training#readme",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
     "connect-session-sequelize": "^8.0.2",
     "ejs": "^3.1.10",

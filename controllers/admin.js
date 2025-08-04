@@ -3,6 +3,7 @@ import fs from 'fs';
 import multer from 'multer'
 import { fileURLToPath } from 'url';
 import User from '../models/users.js';
+import bcrypt from 'bcryptjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -69,22 +70,30 @@ const getLogin = (req, res) => {
         user: req.session.user,
     });
 };
-const postLogin = (req, res) => {
-    User.findOne({ where: { email: req.body.email } })
-        .then(user => {
-            if (user && user.password === req.body.password) {
-                console.log('user found logging in');
-                req.session.isLoggedIn = true;
+
+const postLogin = async (req, res) => {
+    const user = await User.findOne({ where: { email: req.body.email } });
+    if (user) {
+        const PasswordMatch = await bcrypt.compare(req.body.password, user.password);
+        if (PasswordMatch) {
+            console.log('user found logging in');
+            req.session.isLoggedIn = true;
+            req.session.user = user;
+            return req.session.save(err => {
+                if (err) {
+                    console.error('Session save error:', err);
+                }
                 res.redirect('/');
-            }
-            else {
-                console.log('Incorrect Email or password');
-                res.redirect('/login');
-            }
-        }).catch(err => {
-            console.log(err);
-        })
+            });
+        }
+    }
+
+    // you are here if no user was found or password didn't match
+
+    console.log("Incorrect email or password");
+    res.redirect('/');
 };
+
 const getRegister = (req, res) => {
     res.render('admin/register', {
         title: "Register",
@@ -92,20 +101,29 @@ const getRegister = (req, res) => {
         user: req.session.user,
     });
 };
-const postRegister = (req, res) => {
-    console.log(req.body)
-    const username = req.body.username;
-    const email = req.body.email;
-    const password = req.body.password;
+const postRegister = async (req, res) => {
+    try {
+        const user = await User.findOne({ where: { email: req.body.email } });
+        if (user) {
+            return res.render('pages/error', {
+                title: "Error: user already exists",
+                message: 'This user already exists, please log in or enter a new email.',
+                isLoggedIn: req.session.isLoggedIn,
+                user: req.session.user
+            });
+        }
 
-    User.create({ username: username, email: email, password: password })
-        .then(() => {
-            res.redirect('/');
-        }).catch(err => {
-            console.log(err);
-        })
-
+        await User.create({
+            username: req.body.username,
+            email: req.body.email,
+            password: await bcrypt.hash(req.body.password, 12)
+        });
+        res.redirect('/login');
+    } catch (err) {
+        console.error(err);
+    }
 };
+
 const postLogout = (req, res) => {
     req.session.destroy(() => {
         res.redirect('/');
