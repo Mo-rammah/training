@@ -40,7 +40,9 @@ app.use(session({
 }));
 
 import adminRoutes from './routes/admin.js';
+import authRoutes from './routes/auth.js';
 
+app.use(authRoutes);
 app.use(adminRoutes);
 
 app.get('/', (req, res) => {
