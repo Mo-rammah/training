@@ -19,7 +19,7 @@ const sessionStore = new SequelizeStore({
 });
 
 //database imports.
-import User from './models/users.js'; //will use later for realtions.
+import User from './models/users.js'; //will use later for relations.
 import { ensureDbExists } from './util/db-init.js'
 await ensureDbExists();
 
