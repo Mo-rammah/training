@@ -38,8 +38,7 @@ const upload = multer({
 const getUpload = (req, res) => {
     res.render('pages/upload', {
         title: 'Upload a file',
-        isLoggedIn: req.session.isLoggedIn,
-        user: req.session.user,
+
     })
 };
 
