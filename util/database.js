@@ -1,5 +1,8 @@
 import Sequelize from 'sequelize';
+import dotenv from 'dotenv';
 
-const sequelize = new Sequelize('training', 'root', 'ZeroTwoPie3469', { dialect: 'mysql' });
+dotenv.config();
+
+const sequelize = new Sequelize(process.env.DB_NAME, 'root', process.env.DB_PASS, { dialect: 'mysql' });
 
 export default sequelize;

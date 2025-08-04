@@ -2,6 +2,8 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import { checkAuth } from './middleware/is-logged-in.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,14 +32,9 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
+app.use(checkAuth);
 
-
-app.use(session({
-    secret: 'this-is-going-to-be-my-secret-key',
-    store: sessionStore,
-    resave: false,
-    saveUninitialized: false,
-}));
 
 import adminRoutes from './routes/admin.js';
 import authRoutes from './routes/auth.js';
@@ -48,8 +45,6 @@ app.use(adminRoutes);
 app.get('/', (req, res) => {
     res.render('pages/index', {
         title: "Training",
-        isLoggedIn: req.session.isLoggedIn,
-        user: req.session.user,
     })
 });
 

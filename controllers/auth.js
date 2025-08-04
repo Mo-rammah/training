@@ -1,11 +1,13 @@
 import User from '../models/users.js';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const getLogin = (req, res) => {
     res.render('admin/login', {
         title: "Login",
-        isLoggedIn: req.session.isLoggedIn,
-        user: req.session.user,
     });
 };
 
@@ -15,28 +17,24 @@ const postLogin = async (req, res) => {
         const PasswordMatch = await bcrypt.compare(req.body.password, user.password);
         if (PasswordMatch) {
             console.log('user found logging in');
-            req.session.isLoggedIn = true;
-            req.session.user = user;
-            return req.session.save(err => {
-                if (err) {
-                    console.error('Session save error:', err);
-                }
-                res.redirect('/');
-            });
+            const token = jwt.sign(
+                { id: user.id, email: user.email },
+                process.env.JWT_SECRET,
+                { expiresIn: '1h' }
+            );
+            res.cookie('token', token, { httpOnly: true });
+            return res.redirect('/');
         }
     }
 
     // you are here if no user was found or password didn't match
-
     console.log("Incorrect email or password");
-    res.redirect('/');
+    res.redirect('/login');
 };
 
 const getRegister = (req, res) => {
     res.render('admin/register', {
         title: "Register",
-        isLoggedIn: req.session.isLoggedIn,
-        user: req.session.user,
     });
 };
 const postRegister = async (req, res) => {
@@ -63,9 +61,10 @@ const postRegister = async (req, res) => {
 };
 
 const postLogout = (req, res) => {
-    req.session.destroy(() => {
-        res.redirect('/');
-    })
+    res.clearCookie('token', {
+        httpOnly: true,
+    });
+    res.redirect('/');
 }
 
 
