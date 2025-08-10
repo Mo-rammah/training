@@ -35,9 +35,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.use(checkAuth);
 
+import { refreshToken } from './middleware/refresh-token.js';
+app.get('/refresh', refreshToken);
 
-import adminRoutes from './routes/admin.js';
 import authRoutes from './routes/auth.js';
+import adminRoutes from './routes/admin.js';
+
 
 app.use(authRoutes);
 app.use(adminRoutes);

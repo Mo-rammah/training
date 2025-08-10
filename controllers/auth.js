@@ -17,12 +17,21 @@ const postLogin = async (req, res) => {
         const PasswordMatch = await bcrypt.compare(req.body.password, user.password);
         if (PasswordMatch) {
             console.log('user found logging in');
-            const token = jwt.sign(
+            const accesstoken = jwt.sign(
                 { id: user.id, email: user.email },
                 process.env.JWT_SECRET,
-                { expiresIn: '1h' }
+                { expiresIn: '15m' }
             );
-            res.cookie('token', token, { httpOnly: true });
+            const refreshToken = jwt.sign(
+                { id: user.id, email: user.email },
+                process.env.JWT_SECRET,
+                { expiresIn: '7d' }
+            );
+
+            await user.update({ refreshToken });
+
+            res.cookie('token', accesstoken, { httpOnly: true });
+            res.cookie('refreshToken', refreshToken, { httpOnly: true });
             return res.redirect('/');
         }
     }
@@ -66,7 +75,6 @@ const postLogout = (req, res) => {
     });
     res.redirect('/');
 }
-
 
 export default {
     getLogin,
