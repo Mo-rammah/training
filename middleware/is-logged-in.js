@@ -6,8 +6,14 @@ export const checkAuth = (req, res, next) => {
     res.locals.user = null;
 
     if (!token) return next();
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    res.locals.isLoggedIn = true;
-    res.locals.user = decoded;
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        res.locals.isLoggedIn = true;
+        res.locals.user = decoded;
+    }
+    catch (err) {
+        console.log(err.name);
+        return next();
+    }
     next();
 };
